@@ -1,5 +1,17 @@
 import React, { Component } from 'react';
 import './App.css';
+import Header from './components/Header/index'
+import styled from 'styled-components'
+import Board from './components/Board';
+
+const Container = styled.div`
+  max-width: 1200px;
+  color: white;
+  text-align: center;
+  font-family: 'Indie Flower', cursive;
+  font-size: 16px;
+  margin: 0 auto;
+`
 
 const WINNING_COMBOS = [
   [0, 1, 2], //rows
@@ -10,7 +22,8 @@ const WINNING_COMBOS = [
   [2, 5, 8], //cols
   [0, 4, 8], //diag  
   [2, 4, 6]  //diag
-]  
+]
+
 class App extends Component {
   constructor(props) {
     super(props)
@@ -52,7 +65,6 @@ class App extends Component {
 
   updateScore(player) {
     this.state.score[player]++
-    // this.forceUpdate()
   }
 
   reset() {
@@ -63,7 +75,6 @@ class App extends Component {
   }
 
   alertMessage() {
-    // this.forceUpdate() 
     alert(this.whoWon().toUpperCase() + ' has won!!!')
   }
 
@@ -83,7 +94,6 @@ class App extends Component {
       if(arr.filter((value) => value === marker).length === 2) {
         for(let j = 0; j < 3; j++) {
           if(this.state.board[line[j]] === null) {
-            console.log(line[j])
             return line[j]
           }
         }
@@ -110,11 +120,14 @@ class App extends Component {
   }
 
   computerTurn() {
-    let index = this.playerAlmostWon(this.state.computer_marker) || this.playerAlmostWon(this.state.Player_1_marker)
-    if(this.playerAlmostWon(this.state.computer_marker) === 0 || this.playerAlmostWon(this.state.Player_1_marker) === 0) {
+    let index = this.playerAlmostWon(this.state.computer_marker) 
+                || this.playerAlmostWon(this.state.Player_1_marker)
+
+    if(this.playerAlmostWon(this.state.computer_marker) === 0 || 
+    this.playerAlmostWon(this.state.Player_1_marker) === 0) {
       index = 0
     }
-    console.log(index)
+
     if(!index && index !== 0) {
       if(this.state.board.indexOf('X') === 4) {
         if (this.state.board[2] == null) {
@@ -174,7 +187,7 @@ class App extends Component {
     this.handleClick(index)
   }
 
-  handleClick(index) {
+  handleClick = (index) => {
     if(this.state.board[index] === null) {
       this.setState({
         board: this.state.board.map(
@@ -187,26 +200,21 @@ class App extends Component {
   
   render() {
     return (
-      <div className="container">
-        <header>
-          <h1>Tic-Tac-Toe</h1> 
-          <ul>
-            <h2>Players Scores</h2>
-            <li>You: <span>{this.state.score.player}</span></li>
-            <li>Com: <span>{this.state.score.computer}</span></li>
-          </ul> 
-        </header>
-        <main>
-          <div className="board">
-            {this.state.board.map( 
-              (cell, index) => <div className="square" onClick={
-              () => this.handleClick(index)}>{this.state.board[index]}</div>
-            )}
-          </div>
-        </main>
-      </div>
+      <Container>
+        <Header 
+          playerScore={this.state.score.player}
+          computerScore={this.state.score.computer}
+        />
+        <Board
+          board={this.state.board}
+          handleClick={this.handleClick}
+        />
+        
+      </Container>
     )
   }
 }
+
+
 
 export default App;
